@@ -1,5 +1,11 @@
 plugins {
-    id("java")
+    java
+    application
+}
+
+application {
+    mainClass = "src/main/java/org/example/Main.java"
+    mainModule = "src/main"
 }
 
 group = "org.example"
@@ -11,10 +17,13 @@ repositories {
 
 dependencies {
     implementation("org.jsoup:jsoup:1.19.1")
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.jar {
+    manifest.attributes["Main-Class"] = "org.example.Main"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree)
+    from(dependencies)
 }
