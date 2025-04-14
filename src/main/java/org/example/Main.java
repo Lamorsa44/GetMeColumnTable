@@ -2,6 +2,7 @@ package org.example;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -24,9 +25,10 @@ public class Main {
         var gudTable = tables.get(sc.nextInt());
         // Table | Column
         Counter.reset();
-        String columns = gudTable.select("tr").first().text();
+        String[] columns = gudTable.select("tr").first().stream().skip(1)
+                .map(Element::text).toArray(String[]::new);
         System.out.println("Selected column: ");
-        for (String s : columns.split(" ")) {
+        for (String s : columns) {
             System.out.printf("%d: %s\n", Counter.getCountAndIncrement(), s);
         }
 
@@ -47,11 +49,11 @@ public class Main {
             String word = sc.nextLine();
             Function<String, String> patternFunction = s -> "(?i)" + s + ".*";
             if (set.stream().anyMatch(text -> text.matches(patternFunction.apply(word)))) {
-                System.out.println("Yes");
+                Counter.reset();
                 set.stream().filter(text -> text.matches(patternFunction.apply(word)))
-                        .forEach(System.out::println);
+                        .forEach(s -> System.out.println(Counter.getCountAndIncrement() + ": " + s));
             } else {
-                System.out.println("No");
+                System.out.println("None found");
             }
         }
     }
