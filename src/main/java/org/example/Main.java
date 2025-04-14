@@ -31,20 +31,19 @@ public class Main {
         for (String s : columns) {
             System.out.printf("%d: %s\n", Counter.getCountAndIncrement(), s);
         }
+        Counter.reset();
 
         System.out.println("Select column to fetch data from 0 to n");
         int column = sc.nextInt();
         // Column | Rows
         var rows = gudTable.select("tr");
         final HashSet<String> set = new HashSet<>();
-        rows.forEach(row -> {
-            String text = row.child(column).text();
-            set.add(text);
-            System.out.println(text);
-        });
+        rows.forEach(row -> set.add(row.child(column).text()));
+        set.forEach(x -> System.out.println(Counter.getCountAndIncrement() + ": " + x));
 
         //Maybe get all matching results and display? different pattern selection?
-        System.out.println("Enter text you want to search, when you're done use ctrl + D");
+        sc.nextLine();
+        System.out.println("Enter text you want to search, when you're done use ctrl + D or C idk");
         while (sc.hasNextLine()) {
             String word = sc.nextLine();
             Function<String, String> patternFunction = s -> "(?i)" + s + ".*";
